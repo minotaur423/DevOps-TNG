@@ -1,12 +1,9 @@
----
-  name: Jose
-  Job: Linux Engineer
-  skills:
-    - C#
-    - Python
-    - PHP
-    - scripts
-        - bash
-        - korn
-        - zsh: ":this is the best."
-...
+ - hosts: all
+   become: yes
+   tasks:
+       - name: Ensure that Apache web server is installed
+         yum: 
+             name: httpd 
+             state: present
+       - name: Ensure that the service is running and presistent
+         service: name=httpd state=started enabled=yes
