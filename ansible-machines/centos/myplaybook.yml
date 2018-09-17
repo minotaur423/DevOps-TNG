@@ -1,0 +1,12 @@
+---
+  name: Jose
+  Job: Linux Engineer
+  skills:
+    - C#
+    - Python
+    - PHP
+    - scripts
+        - bash
+        - korn
+        - zsh: ":this is the best."
+...
