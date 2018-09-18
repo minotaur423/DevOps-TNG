@@ -1,4 +1,3 @@
 __pycache__
-*.txt
 *.log
 ansible-machines/centos/.vagrant/*
