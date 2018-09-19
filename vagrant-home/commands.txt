@@ -1,0 +1,16 @@
+From client server:
+ansible db -b -m service -a 'name=mariadb state=started enabled=yes'
+
+ansible db -b -m yum -a 'name=MySQL-python state=present'
+
+ansible db -b -m mysql_user -a 'name=root host=localhost password=mypassword'
+
+[vagrant@database ~]$ mysql -u root -pmypassword
+
+ansible db -b -m mysql_user -a 'name=codeigniter host=% password=cipassword priv=appdb.*:ALL state=present login_user=root login_password=mypassword'
+
+ansible db -m mysql_db -a 'name=appdb login_user=root login_password=mypassword'
+
+ansible web -b -m yum -a 'name=mysql'
+
+[vagrant@webserver ~]$ mysql -u codeigniter -h 192.168.33.30 -pcipassword
