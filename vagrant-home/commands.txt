@@ -156,4 +156,12 @@ ansible web -b -m user -a "name=cidev group=developers"
 
 ansible web -b -m user -a "name=cidev group=developers comment='Tis is the codeigniter user'"
 
+ansible all -m stat -a 'path=/etc/hosts'
+
+ansible web -m copy -a "src=welcome.txt dest=/tmp/welcome.txt"
+
+ansible web -m copy -a "src=items dest=/tmp/"
+
+ansible web -m copy -a "src=items/ dest=/tmp/"
+
 
