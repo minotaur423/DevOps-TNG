@@ -1,3 +1,33 @@
+$ docker version --> Verifies cli can talk to docker engine.
+
+$ docker info --> most configuration values of the docker engine.
+
+$ docker container run --name mongo01 -d mongo --> Create the mongo01 container.
+
+$ docker container exec -it mongo01 bash --> Enter container.
+
+$ docker top mongo01 --> See processes in container.
+
+$ docker container logs mongo01 --> Show logs for mongo01.
+
+$ docker container stop mongo01 --> Stop the mongo01 container.
+
+$ docker container start mongo01 --> Start a stopped container.
+
+Manage different aspects of a container: 
+
+Create:	$ docker container run --name mongo01 -d mongo --> --detach or -d puts container in background.
+	$ docker container run --publish 80:80 -d nginx --> --publish or -p assigns ports host:container.
+	$ docker container run -it --name nginx02 -p 8080:80 nginx bash
+
+Start container: $ docker container start mongo01
+
+Stop container: $ docker container stop mongo01
+
+Delete container: $ docker container rm mongo01
+
+Docker network commands:
+
 1. # docker network ls --> This shows me all of the networks that have been created.
 
 2. # docker network inspect NETWORK_NAME --> This is used to view network adapter information.
@@ -22,7 +52,7 @@
 	Sample odoutput below:
 	172.17.0.2
 
-8. # docker container exec -it my_nginx ping new_nqinx - Test DNS between containers.
+8. # docker container exec -it my_nginx ping new_nqinx --> Test DNS between containers.
 
 9. # docker container run --rm -it ubuntu:14.04 bash --> Creates an Ubuntu container that will be removed on exit.
 
@@ -43,3 +73,13 @@ Assignment:  DNS Round Robin Test --> Lecture 33 and 34
 	# docker container run --rm --net dude centos curl -s search:9200
 	# docker container run --rm --net dude centos curl -s search:9200
 	# docker container run --rm --net dude centos curl -s search:9200
+
+5. Good network test:
+	$ docker network create -d bridge mybridge01 --> Create a virtual network.
+	$ docker network ls --> Check to see newly created network device/name.
+	$ docker container run -d -p 80:80 --network=mybridge01 --name nginx01 nginx:alpine
+	$ docker container run -d -p 8080:80 --network=mybridge01 --name nginx02 nginx:alpine
+	$ docker network inspect mybridge01 --> Check to see if containers are added to the new network.
+	$ docker container exec -it nginx02 ping -c4 nginx01 --> Test ping in one direction.
+	$ docker container exec -it nginx01 ping -c4 nginx02 --> Test ping in the other direction.
+
