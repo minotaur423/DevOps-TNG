@@ -1,0 +1,267 @@
+Requirements for this lecture are that you know how to start a container from previous lectures.
+
+We just finished the last lecture talking about seeing what's going on in a container from the outside.
+
+This is all about getting into a container to mess around with the inside. There's a few commands
+
+that we can use.
+
+The first one is container run with a -it.
+
+We'll talk about how the -it works to actually get a shell inside the container.
+
+Then for running containers that you want to run a second process, you can also use the container
+
+exec, and we'll show several examples of that.
+
+Then along the way we're going to actually mention a few differences between a regular Linux distribution,
+
+like Ubuntu, for installing on a virtual machine or on hardware.
+
+And then what those Linux distros are like inside of a container.
+
+Let's get started.
+
+Looking into a container from the outside is very handy at times.
+
+But one of the first questions that people often ask me is how do I get into the container and actually
+
+do things in it live from the command line.
+
+Sometimes people confuse this with wanting an SSH Server inside their container so they can ssh
+
+into it.
+
+But we don't actually need to do that because we have several commands at our disposal that let us get
+
+a shell inside the container itself while it's running.
+
+The first one is just the docker container run command.
+
+But we're going to specify a few extra options.
+
+We're going to do a -it.
+
+The -it is actually two separate options.
+
+If I just show the help real quick, you can see that the t actually gives us a pseudo tty or
+
+a prompt similar to what you would have through ssh.
+
+And then if we scroll up to i,
+
+that's really what allows us to keep that session open so that we can keep running more commands.
+
+If we do a docker container run -it, and then run another nginx. Let's call it proxy.
+
+Then we're going to have to specify an alternate command.
+
+If you remember at the beginning of this section where we talked about the format of the docker command
+
+line, when you're doing a docker container run, as you can see through the help, here at the end, after
+
+the image, you have optional command and arguments that you can send in to this new container that you're
+
+about to start to tell it what to run. The image has a default command in it that we will see later how
+
+to configure.
+
+But if you wanted to change what was run on startup, you can do that right from the run line.
+
+Let's just say Bash. Because Bash is one of the common shells that you would usually find in a container
+
+that will give you a shell to work with.
+
+Look at that. I'm in a prompt.
+
+You'll notice my prompt says root which is the user that the container started as. It doesn't actually
+
+mean I'm root on the host.
+
+It just means I'm acting as root on the container.
+
+That number after it is actually the container ID.
+
+If I do a ls -al, I get a full listing of everything where I'm at.
+
+And you can see that I'm in the root path of the file system inside the container.
+
+I'm actually looking at all the files inside the container which is based on the Nginx image.
+
+From here, I could go change config files,
+
+I could download packages from the internet and do just about any common administrative thing that you
+
+would do from a normal shell.
+
+To get out of the shell when you're done, I'm going to type exit, like you would with any shell and now that
+
+container has stopped.
+
+If we actually did a docker container ls, you would not see it there.
+
+Remember, we called it proxy.
+
+So I had to do a -a.
+
+And it's there. Now see the command that it ran. The default command for an Nginx container is to run
+
+the Nginx program itself.
+
+But when we typed our last command, we changed that default program to actually be Bash, which gave us
+
+our shell. When we exited the shell, the container stopped. Because container s only run as long as
+
+the command that it ran on startup runs. Since we changed it to Bash, simply exiting Bash quit it
+
+Now,
+
+what if I used a full distribution of Linux instead of actually doing the Nginx. Let's do a full
+
+Ubuntu.
+
+It's actually going to download the Ubuntu image and place me in the prompt of this new container.
+
+If you've ever used Ubuntu, you know about the apt package manager.
+
+So I can use that here. Just like I would in a standard Ubuntu server. I could actually install
+
+something apt-get install
+
+-y
+
+curl.
+
+The thing about Ubuntu and other distributions inside a container is that they're usually very minimal.
+
+A live CD or a download of the ISO of Ubuntu which you would normally put on a virtual machine is going
+
+to have a lot more software installed by default than a Ubuntu container which is really a very minimal
+
+version of Ubuntu that you can always add more software to with the apt package manager.
+
+So now this running container has curl installed and I can use it just like I would on a local machine.
+
+Once I exit the shell again, it will actually stop the container. docker container
+
+ls. You notice I don't see it. There's that Ubuntu image that we just ran.
+
+If I started that container up again, it would have curl installed in it.
+
+But if I created a new container from the Ubuntu image, that different container would not have the curl
+
+command line installed.
+
+What if we wanted to rerun that container and get Bash right back in it again.
+
+We could use the docker container start command.
+
+You'll notice it's slightly different when we start an existing container, but it's similar to the
+
+it...it's just an ai.
+
+Then the name of our container Ubuntu. You'll notice we're right back in it and I can curl google
+
+again and it works.
+
+If I exit, it stopped it again.
+
+What if I want to actually see the shell inside a running container that's already running something
+
+like MySQL or Nginx.
+
+We can do that too.
+
+And that's using the exec command. docker container exec.
+
+And you can see we have a few options here.
+
+And the most common one is...let's say I want to jump into the MySQL container because I need to do
+
+some administrative stuff on the MySQL itself.
+
+I could do the it again and then the name of the container. Then the program I want to run.
+
+And in this case again it's Bash and I'm now in the container with MySQL.
+
+I can actually do a ps aux right inside the container which lists the processes. This will, of
+
+course, show me the MySQL daemon that's running in the background, as well as the Bash process that I'm
+
+currently sitting in, as well as the ps command that
+
+I just ran. In this shell, I could jump into MySQL itself with the mysql command line. You'll
+
+notice when I exit this Bash shell and do an ls, MySQL is still running. Because the docker container exec
+
+actually runs an additional process on an existing running container,
+
+it's not going to affect the root process for the MySQL daemon. Let's try one more.
+
+As you can see here this is very useful for jumping into containers when you need to troubleshoot or
+
+when you need to change something slightly on a running system, as well as using containers of different
+
+distributions to give you the environment you would have if you had a full machine like a Ubuntu or
+
+an Alpine.
+
+Now what's Alpine? We haven't mentioned Alpine before. Alpine is another distribution of Linux, but Alpine
+
+is designed to be very small.
+
+It's actually only 5MB in size.
+
+If I do a docker pull alpine, that will pull down the latest Alpine image and if I do a docker image
+
+ls, you can actually see how small the Alpine image is compared to the Ubuntu.
+
+The neat thing about Alpine is that it also comes with its own package manager.
+
+So you'll see Alpine as an option on Docker Hub alot in the next section when we go over images and
+
+Docker Hub.
+
+But for now let's do a Bash shell inside of Alpine. docker container run -it alpine bash.
+
+Now what just happened here?
+
+Why did I get in there?
+
+It tells me that it's starting the container process and it caused the executable file bash to not be found
+
+in the path. And what that really means is that Bash isn't in the container.
+
+And this goes back to the concept that we can only run things in the container that already exists in
+
+its image
+
+when you started it.
+
+Or maybe something that you've added later through the exec or run commands.
+
+But in this case, how would I get in the Alpine image?
+
+Well, Alpine is so small that it doesn't actually have Bash in it. But it does have sh. So we can replace
+
+the command with sh, which is not quite as full featured as Bash but does get us right into the container.
+
+If you were to search Alpine Linux on the internet, you would learn that its package manager is
+
+apk and we could actually use that to install Bash if we really needed it.
+
+Just to recap real quick of what we learned in this lesson.
+
+We learned about the -it option for container run, which gives us the equivalent of an interactive
+
+shell to actually do things in the container as we would if we were ssh'd into a server of some sort.
+
+Then we learned a new command for
+
+docker container exec with the it that does exactly the same thing as run, but it does it on an
+
+existing container that's running not starting a new container.
+
+And last, we learned a little bit about Alpine and how that's different from major Linux distributions
+
+and how it's actually like 4MB in size and ideal for container images.

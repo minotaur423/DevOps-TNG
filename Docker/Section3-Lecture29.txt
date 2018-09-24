@@ -1,0 +1,45 @@
+1. # docker network ls --> This shows me all of the networks that have been created.
+
+2. # docker network inspect NETWORK_NAME --> This is used to view network adapter information.
+	Usage:  docker network inspect [OPTIONS] NETWORK [NETWORK...]
+
+3. # docker network create --driver --> This command is used to create a network.
+	Usage:  docker network create [OPTIONS] NETWORK
+
+4. # docker network connect --> This command is used to attach a network to a container.
+	Usage:  docker network connect [OPTIONS] NETWORK CONTAINER
+
+5. # docker network disconnect --> This command is used to detach a network from a container.
+	Usage:  docker network disconnect [OPTIONS] NETWORK CONTAINER
+
+6. # docker container port webhost --> Shows IP and port of webhost container.  
+	Usage:  docker container port CONTAINER [PRIVATE_PORT[/PROTO]]
+	Sample output below:
+	80/tcp -> 0.0.0.0:80
+
+7. # docker container inspect --format '{{.NetworkSettings.IPAddress}}' webhost --> This command shows the IP address of webhost.  
+	Usage:  docker container inspect [OPTIONS] CONTAINER [CONTAINER...]
+	Sample odoutput below:
+	172.17.0.2
+
+8. # docker container exec -it my_nginx ping new_nqinx - Test DNS between containers.
+
+9. # docker container run --rm -it ubuntu:14.04 bash --> Creates an Ubuntu container that will be removed on exit.
+
+Assignment:  DNS Round Robin Test --> Lecture 33 and 34
+
+1. Create a new virtual network named dude:
+	# docker network create dude
+
+2. Create two containers from elasticsearch:2 image --> user --net-alias search when creating them to give them an additional DNS name to respond to.
+	# docker container run -d --net dude --net-alias search elasticsearch:2
+	# docker container run -d --net dude --net-alias search elasticsearch:2
+
+3. Run alpine nslookup search with --net to see the two containers list for the same DNS name:
+	# docker container run --rm --net dude alpine nslookup search
+
+4. Run centos curl -s search:9200 with --net multiple times until you see both "name" fields show.
+	# docker container run --rm --net dude centos curl -s search:9200
+	# docker container run --rm --net dude centos curl -s search:9200
+	# docker container run --rm --net dude centos curl -s search:9200
+	# docker container run --rm --net dude centos curl -s search:9200

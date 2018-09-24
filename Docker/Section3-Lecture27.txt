@@ -1,0 +1,269 @@
+Requirements for this section include understanding how to start a container. Then basic TCP/IP
+
+networking concepts, such as subnets and IPs and ports and firewalls.
+
+You don't have to know all that, but it'll definitely make it a lot easier for you to understand this
+
+section which is focused on conceptual stuff,
+
+before we actually get into a bunch of the command line stuff in the next lecture.
+
+I just want to remind you about the -p option on your container run commands which exposes the
+
+port on your machine.
+
+There's actually a lot more going on in the background of Docker networking that we'll talk about.
+
+Docker has this concept of batteries included but removable which basically means that the defaults
+
+are pretty easy and common to work with, but that you can change a lot of the options under the hood.
+
+We'll quickly check out in this lecture the container port command that gives you a quick output
+
+of what ports are open for that container on your network.
+
+Then we're going to break down some of the concepts of Docker networking and virtual networks and
+
+how packets flow around the network.
+
+And we'll finish up with a network diagram showing how containers talk amongst each other and how that's
+
+different from the -p of exposing them onto the physical network.
+
+When you actually start a container, you're really in the background connecting to a particular Docker
+
+network. By default, that is the bridge network, as we'll check out in a minute. Then each one of
+
+those networks that you would connect to actually route out through a NAT firewall, which is actually
+
+the Docker daemon configuring the host IP address on its default interface so that your containers can
+
+get out to the Internet or to the rest of your network and then get back.
+
+But we don't actually need to use the -p when we have specific containers wanting to talk to each
+
+other inside our host.
+
+For example, if you had an application that had a sequel server and PHP Apache container, those two containers
+
+should be on the same network and they're able to talk to each other without actually opening their
+
+ports up to the rest of your physical network.
+
+If you had another application that was unrelated, that let's say was using Mongo and Node.js, you could
+
+create a network for that so that they could talk with each other without using the -p to expose them
+
+to the network. But they couldn't actually talk to the other network where you might have an unrelated
+
+app running.
+
+But the thing is that just about all those settings I described are actually changeable.
+
+And this brings up a good saying that Docker likes to use...that is batteries included but removable.
+
+You'll see that throughout this course that a lot of times there are defaults that just work out of
+
+the box.
+
+You don't even have to specify them. You just notice that things are configured in a sort of standard
+
+way.
+
+But a lot of these options are configurable either at runtime or even changeable after the fact. And
+
+we'll see some of that take place here when we play around with the networks.
+
+Some of the things that you can actually change would be creating multiple virtual networks, maybe one
+
+per app, or different ones based on different security requirements.
+
+You can actually, just like in the physical world, have two physical NICs on a real computer. You can
+
+actually have two virtual networks connected to one container, or you can actually have the container
+
+talk to no networks.
+
+You can skip any of the virtual network configuration that comes out of the box and actually use
+
+--
+
+net=host, and you'll lose some of the containerization benefits.
+
+But in some cases it might be required.
+
+Later on, we're actually going to get into Docker network drivers. There's this whole plugin
+
+ecosystem around Docker that extends the capabilities of Docker to a lot of third party tools.
+
+But in this case we're going to look at a couple of different Docker network drivers and how they might
+
+change up our networking and give us new abilities.
+
+This is really just scratching the surface.
+
+There's actually networking concepts throughout this course where we'll be talking about more advanced
+
+topics of multi host private networking and concepts like sub interfaces and so on.
+
+But for now, let's dive into some command line stuff.
+
+As a quick review,
+
+let's look at the -p of our container running commands...docker container run.
+
+If you remember when we first ran a container, we used the -p to expose port 80 of our Nginx.
+
+That took the left side, which is the host port, and forwards traffic from that port into the port
+
+80 of the container.
+
+If we did docker container port webhost, it actually shows this in a nice, easy format
+
+which ports are forwarding traffic to that container from the host into the container itself.
+
+We haven't talked about the IP address of the container.
+
+So you might just assume that the container is using the same IP as the host. But by default, that's
+
+not true.
+
+We can easily get the Docker IP of that container by inspecting it and we're going to use the
+
+format command, or option really, which you'll notice actually has a pretty specific format for how
+
+to filter incoming stuff.
+
+You can always use the grep command which we used earlier to filter out your text output, but the
+
+format, the --format, it's actually a little cleaner and consistent. You do two curly brackets,
+
+and then once we get used to knowing the format of the config file, we know that NetworkSettings.IP
+
+Adress is the actual node of that JSON output that we want to look at.
+
+And then webhost. Oops that means I didn't spell it right.
+
+I P A d d.
+
+And that's not what I expected.
+
+If I was going to use the IP of my host because I know my Macs on my local network, and if I do an
+
+ifconfig on my Mac, I just know that the IP address is on my home network or a 1 9 2 1 6 8 Subnet.
+
+That's interesting that they're not the same network.
+
+So why is that?
+
+Let's see if it'll make more sense if I draw it out.
+
+If my host operating system is connected to my network...this is my network...physical network. Then
+
+this is the Ethernet interface on my host machine, in my case it's my Mac.
+
+There's a little firewall in there that does several things. It blocks all incoming traffic coming
+
+in from the network so that everything is blocked by default. I would call it a firewall. Any traffic
+
+that's coming out from my containers is going to be NATed by default.
+
+It's acting like a pretty common edge firewall on a network.
+
+But there's this concept of the virtual networks, and by default, you'll see a network called bridge
+
+or docker0.
+
+When you start a new container, we'll call it C1, that container is attached to that network, that virtual
+
+network, and that virtual network is automatically attached to your Ethernet interface on your host so
+
+that it can get out.
+
+In our case, when we just launched that Nginx, we gave it a -p 80:80. That told it over
+
+here to open up port 80 on my Ethernet interface on my Mac and forward
+
+anything coming into port 80 through that virtual network
+
+to port 80 in that container.
+
+By default, when I create a second container, it's put on that same bridge network.
+
+Those two containers can talk freely back and forth on their exposed ports.
+
+Unless I specify the -p, no traffic coming into my internal networks here is going to get to
+
+my containers.
+
+I can actually create more virtual networks and call them what I want. I'm going to call this one
+
+net my app, let's say. And let's say I connect two containers here...I got MySQL.
+
+Then I got an Apache.
+
+On MySQL,
+
+I didn't open up any ports, and never specified a -p. But on the Apache one, I gave it a -p of
+
+8080:80.
+
+That would mean over here on the right, at my Ethernet interface on my host, it's going to start listening on port
+
+8080.
+
+As soon as traffic comes in to my host on port 8080, it's going to route it through down to this
+
+new virtual network I created and into that Apache server on port 80.
+
+Inside this virtual network, the Apache server is free to talk to the MySQL server over its listening
+
+port.
+
+When you think about virtual networks in Docker, and where containers belong, think about how you
+
+would put different containers in proximity to each other because they're related in their application.
+
+As you can see, these two examples, if I had a container one and a container two up top rank something different,
+
+If they're not going to be talking to the services in this network down below, then it would make sense
+
+to keep them on separate virtual networks.
+
+If they ever had to talk to each other, they would have to go through their published ports all the
+
+way out and back in.
+
+As a reminder, on any interface on your host, you can't listen on more than one port for multiple containers.
+
+So, you can't have two containers listening on the port 80 at the host level.
+
+Only one can do that.
+
+If you try to start another container, it would actually error out and say that there's already something
+
+else on that port. That's not a Docker limitation; that's just a limitation of how IP networking typically
+
+works.
+
+Just a quick recap on this section. We actually spent a lot of time on the concepts of Docker networking,
+
+including the exposing of ports on your host to the physical network using the -p. The idea of
+
+Docker focusing on sane defaults where they call it batteries included but removable.
+
+How for local dev and testing, you probably can just get by with the defaults, but everything is changeable.
+
+Then we learned about the container port command which is a quick way to look at the ports exposed
+
+for your particular containers.
+
+Then we broke down the packets moving around virtual networks and how those relate to other virtual
+
+networks, and how they get in and out of your Docker machine.
+
+So, these are all really good concepts to understand as we jump into the actual CLI stuff in the next
+
+lecture.
+
+docker container inspect --format '{{.NetworkSettings.IPAddress}}' webhost

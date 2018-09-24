@@ -1,0 +1,90 @@
+
+If you go looking around the web for a definition of what a container is, you'll often see people
+
+comparing containers to virtual machines.
+
+True, there are some similarities, but there's so many things that just aren't the same.
+
+I want us to back up and say let's not even compare them to virtual machines. Because really they're just
+
+a process. They're a process running on your host operating system,
+
+in our case Linux. Let's take a look because it's super easy to understand the concept that's really
+
+just a restricted process inside our host operating system and nothing like a virtual machine.
+
+Let's start up a Mongo database.
+
+We're going to call it mongo. We're going to run it in the background.
+
+And we're using the Mongo image.
+
+All right. We can see that it's running and Docker also has something called docker top that will let
+
+me list the processes that are running inside a specific container.
+
+We'll see there that we have a single process called mongod.
+
+You can see it's PID, which is its process ID. We can also do that from the host. Because this
+
+is just a process running on our host operating system,
+
+any host tool that I would use to look at processes is going to see this process.
+
+We can use a process list, for example. I'm going to list all of them on the system. You'll actually
+
+see in here, if I search, one of them is called mongod. You'll even notice that it's actually running under
+
+a different process ID than the rest of the system.
+
+And that's just because of the security layers that we'll talk about with the containers and how they're
+
+a little different than regular processes running on the host.
+
+We can clearly see here this is a process on the host.
+
+It's not hiding inside a virtual machine that we can't get access to.
+
+It's right there in front of us.
+
+If I stop this container,
+
+you can do a docker ps. You'll see it's not running.
+
+You can do a docker top mongo.
+
+It's not actually going to give us anything because the container's not running.
+
+And if we do a ps aux,
+
+and we search for mongo again,
+
+we're not going to see anything highlighted in that list. I'm actually searching inside my terminal.
+
+An easier way to do this would be to do
+
+ps aux and then use grep, which is a filtering tool that will look through the output, and we can tell it
+
+to look for the word mongo.
+
+The only thing it's actually going to find is the command that I just run to search for the word
+
+mongo.
+
+It's listing that. We would expect to see another command here
+
+right below it, another output of a process,
+
+if it was indeed running. We can start back up again, docker start mongo, because that container
+
+was still there, just not running in the background,
+
+kind of like a stopped process. We can do a docker ps again and it's back to running again.
+
+We can do a docker top mongo again and see that there is one process again running inside the container.
+
+It's just been started new.
+
+It's only been up for six seconds as we can see here.
+
+If we do a ps aux grep mongo, you'll see that I'm now actually seeing the mongod process.
