@@ -154,13 +154,19 @@ ansible web -b -m group -a "name=developers state=present"
 
 ansible web -b -m user -a "name=cidev group=developers"
 
-ansible web -b -m user -a "name=cidev group=developers comment='Tis is the codeigniter user'"
+ansible web -b -m user -a "name=cidev group=developers comment='This is the codeigniter user'"
 
 ansible all -m stat -a 'path=/etc/hosts'
 
+echo "This is a test file." > welcome.txt
+
 ansible web -m copy -a "src=welcome.txt dest=/tmp/welcome.txt"
 
+mkdir items
+
 ansible web -m copy -a "src=items dest=/tmp/"
+
+echo "This is a test file." > items/welcome.txt
 
 ansible web -m copy -a "src=items/ dest=/tmp/"
 
