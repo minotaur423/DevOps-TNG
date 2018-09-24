@@ -1,3 +1,4 @@
+Containers:
 $ docker version --> Verifies cli can talk to docker engine.
 
 $ docker info --> most configuration values of the docker engine.
@@ -83,3 +84,16 @@ Assignment:  DNS Round Robin Test --> Lecture 33 and 34
 	$ docker container exec -it nginx02 ping -c4 nginx01 --> Test ping in one direction.
 	$ docker container exec -it nginx01 ping -c4 nginx02 --> Test ping in the other direction.
 
+Images:
+$ docker history nginx:latest --> Shows image layers -- What an image is made of.
+$ docker image inspect nginx --> Gives us all the details about the image -- the metadata.
+
+Tagging and Pushing:
+$ docker image pull nginx --> Pulls the image from dockerhub.
+$ docker image tag nginx minotaur423/nginx --> Create a new tag for the nginx image.
+$ docker image push minotaur423/nginx --> Push image to dockerhub repository.
+$ docker image tag minotaur423/mongo minotaur423/mongo:testing --> Create additional tag for image.
+$ docker image push minotaur423/mongo:testing --> Push image to dockerhub repository.
+
+Docker Image Builds:
+$ docker image build -t customnginx .
