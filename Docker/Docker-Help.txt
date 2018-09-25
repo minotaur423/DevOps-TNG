@@ -11,9 +11,13 @@ $ docker top mongo01 --> See processes in container.
 
 $ docker container logs mongo01 --> Show logs for mongo01.
 
+$ docker container start mongo01 --> Start a stopped container.
+
 $ docker container stop mongo01 --> Stop the mongo01 container.
 
-$ docker container start mongo01 --> Start a stopped container.
+$ docker container rm mongo01 --> Deletes container.
+
+$ docker container prune --> Deletes all stopped containers.
 
 Manage different aspects of a container: 
 
@@ -96,4 +100,33 @@ $ docker image tag minotaur423/mongo minotaur423/mongo:testing --> Create additi
 $ docker image push minotaur423/mongo:testing --> Push image to dockerhub repository.
 
 Docker Image Builds:
-$ docker image build -t customnginx .
+Assignment: Slide 42
+1. FROM node:6-alpine
+2. EXPOSE 3000
+3. RUN apk add --update tini
+4. RUN mkdir -p /usr/src/app
+5. WORKDIR /usr/src/app
+6. COPY package.json package.json
+7. RUN npm install && npm cache clean --force
+8. COPY . .
+9. CMD [ "/sbin/tini", "--", "node", "./bin/www" ]
+
+$ docker image build -t testnode .
+$ docker container run -p 80:3000 --rm testnode
+$ docker image tag testnode minotaur423/testingnode
+$ docker push minotaur423/testingnode
+
+Persistent Data:
+Volumes need manual deletion.
+$ docker pull mysql --> Pull official mysql from Docker Hub.
+$ docker inspect mysql --> Show details about mysql image --> Note the volumes section.
+$ docker container run -d --name mysql01 -e MYSQL_ALLOW_EMPTY_PASSWORD=true mysql --> Create container.
+$ docker top mysql01 --> Check container processes.
+$ docker container ls --> Check running containers.
+$ docker container inspect mysql01 --> View container properties, note volumes and mounts sections.
+$ docker volume ls --> View provisioned volumes.
+$ docker volume inspect c1b4767ca126bfb510444f647b024b2e05992c395cfcd7fda14091b13237ef17 --> Check volume details.
+$ docker container run -d --name mysql01 -e MYSQL_ALLOW_EMPTY_PASSWORD=true -v mysql01-db:/var/lib/mysql mysql --> Creates container with named volume.
+$ docker volume ls --> Check volumes, find mysql01-db.
+$ docker volume inspect mysql01-db --> Shows details for volume mysql01-db
+$ docker volume create --> Used for special circumstances before running the docker run command.
