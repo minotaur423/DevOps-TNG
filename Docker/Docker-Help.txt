@@ -1,0 +1,132 @@
+Containers:
+$ docker version --> Verifies cli can talk to docker engine.
+
+$ docker info --> most configuration values of the docker engine.
+
+$ docker container run --name mongo01 -d mongo --> Create the mongo01 container.
+
+$ docker container exec -it mongo01 bash --> Enter container.
+
+$ docker top mongo01 --> See processes in container.
+
+$ docker container logs mongo01 --> Show logs for mongo01.
+
+$ docker container start mongo01 --> Start a stopped container.
+
+$ docker container stop mongo01 --> Stop the mongo01 container.
+
+$ docker container rm mongo01 --> Deletes container.
+
+$ docker container prune --> Deletes all stopped containers.
+
+Manage different aspects of a container: 
+
+Create:	$ docker container run --name mongo01 -d mongo --> --detach or -d puts container in background.
+	$ docker container run --publish 80:80 -d nginx --> --publish or -p assigns ports host:container.
+	$ docker container run -it --name nginx02 -p 8080:80 nginx bash
+
+Start container: $ docker container start mongo01
+
+Stop container: $ docker container stop mongo01
+
+Delete container: $ docker container rm mongo01
+
+Docker network commands:
+
+1. # docker network ls --> This shows me all of the networks that have been created.
+
+2. # docker network inspect NETWORK_NAME --> This is used to view network adapter information.
+	Usage:  docker network inspect [OPTIONS] NETWORK [NETWORK...]
+
+3. # docker network create --driver --> This command is used to create a network.
+	Usage:  docker network create [OPTIONS] NETWORK
+
+4. # docker network connect --> This command is used to attach a network to a container.
+	Usage:  docker network connect [OPTIONS] NETWORK CONTAINER
+
+5. # docker network disconnect --> This command is used to detach a network from a container.
+	Usage:  docker network disconnect [OPTIONS] NETWORK CONTAINER
+
+6. # docker container port webhost --> Shows IP and port of webhost container.  
+	Usage:  docker container port CONTAINER [PRIVATE_PORT[/PROTO]]
+	Sample output below:
+	80/tcp -> 0.0.0.0:80
+
+7. # docker container inspect --format '{{.NetworkSettings.IPAddress}}' webhost --> This command shows the IP address of webhost.  
+	Usage:  docker container inspect [OPTIONS] CONTAINER [CONTAINER...]
+	Sample odoutput below:
+	172.17.0.2
+
+8. # docker container exec -it my_nginx ping new_nqinx --> Test DNS between containers.
+
+9. # docker container run --rm -it ubuntu:14.04 bash --> Creates an Ubuntu container that will be removed on exit.
+
+Assignment:  DNS Round Robin Test --> Lecture 33 and 34
+
+1. Create a new virtual network named dude:
+	# docker network create dude
+
+2. Create two containers from elasticsearch:2 image --> user --net-alias search when creating them to give them an additional DNS name to respond to.
+	# docker container run -d --net dude --net-alias search elasticsearch:2
+	# docker container run -d --net dude --net-alias search elasticsearch:2
+
+3. Run alpine nslookup search with --net to see the two containers list for the same DNS name:
+	# docker container run --rm --net dude alpine nslookup search
+
+4. Run centos curl -s search:9200 with --net multiple times until you see both "name" fields show.
+	# docker container run --rm --net dude centos curl -s search:9200
+	# docker container run --rm --net dude centos curl -s search:9200
+	# docker container run --rm --net dude centos curl -s search:9200
+	# docker container run --rm --net dude centos curl -s search:9200
+
+5. Good network test:
+	$ docker network create -d bridge mybridge01 --> Create a virtual network.
+	$ docker network ls --> Check to see newly created network device/name.
+	$ docker container run -d -p 80:80 --network=mybridge01 --name nginx01 nginx:alpine
+	$ docker container run -d -p 8080:80 --network=mybridge01 --name nginx02 nginx:alpine
+	$ docker network inspect mybridge01 --> Check to see if containers are added to the new network.
+	$ docker container exec -it nginx02 ping -c4 nginx01 --> Test ping in one direction.
+	$ docker container exec -it nginx01 ping -c4 nginx02 --> Test ping in the other direction.
+
+Images:
+$ docker history nginx:latest --> Shows image layers -- What an image is made of.
+$ docker image inspect nginx --> Gives us all the details about the image -- the metadata.
+
+Tagging and Pushing:
+$ docker image pull nginx --> Pulls the image from dockerhub.
+$ docker image tag nginx minotaur423/nginx --> Create a new tag for the nginx image.
+$ docker image push minotaur423/nginx --> Push image to dockerhub repository.
+$ docker image tag minotaur423/mongo minotaur423/mongo:testing --> Create additional tag for image.
+$ docker image push minotaur423/mongo:testing --> Push image to dockerhub repository.
+
+Docker Image Builds:
+Assignment: Slide 42
+1. FROM node:6-alpine
+2. EXPOSE 3000
+3. RUN apk add --update tini
+4. RUN mkdir -p /usr/src/app
+5. WORKDIR /usr/src/app
+6. COPY package.json package.json
+7. RUN npm install && npm cache clean --force
+8. COPY . .
+9. CMD [ "/sbin/tini", "--", "node", "./bin/www" ]
+
+$ docker image build -t testnode .
+$ docker container run -p 80:3000 --rm testnode
+$ docker image tag testnode minotaur423/testingnode
+$ docker push minotaur423/testingnode
+
+Persistent Data:
+Volumes need manual deletion.
+$ docker pull mysql --> Pull official mysql from Docker Hub.
+$ docker inspect mysql --> Show details about mysql image --> Note the volumes section.
+$ docker container run -d --name mysql01 -e MYSQL_ALLOW_EMPTY_PASSWORD=true mysql --> Create container.
+$ docker top mysql01 --> Check container processes.
+$ docker container ls --> Check running containers.
+$ docker container inspect mysql01 --> View container properties, note volumes and mounts sections.
+$ docker volume ls --> View provisioned volumes.
+$ docker volume inspect c1b4767ca126bfb510444f647b024b2e05992c395cfcd7fda14091b13237ef17 --> Check volume details.
+$ docker container run -d --name mysql01 -e MYSQL_ALLOW_EMPTY_PASSWORD=true -v mysql01-db:/var/lib/mysql mysql --> Creates container with named volume.
+$ docker volume ls --> Check volumes, find mysql01-db.
+$ docker volume inspect mysql01-db --> Shows details for volume mysql01-db
+$ docker volume create --> Used for special circumstances before running the docker run command.

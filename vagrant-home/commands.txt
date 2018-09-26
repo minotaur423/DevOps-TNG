@@ -154,14 +154,53 @@ ansible web -b -m group -a "name=developers state=present"
 
 ansible web -b -m user -a "name=cidev group=developers"
 
-ansible web -b -m user -a "name=cidev group=developers comment='Tis is the codeigniter user'"
+ansible web -b -m user -a "name=cidev group=developers comment='This is the codeigniter user'"
 
 ansible all -m stat -a 'path=/etc/hosts'
 
-ansible web -m copy -a "src=welcome.txt dest=/tmp/welcome.txt"
+sudo yum -y install epel-release
 
-ansible web -m copy -a "src=items dest=/tmp/"
+sudo yum -y install jq
 
-ansible web -m copy -a "src=items/ dest=/tmp/"
+ansible web -m stat -a 'path=/etc/hosts' | sed 's/.*SUCCESS.*=> //g' | jq '.stat | {perms: .mode, group: .gr_name, owner: .pw_name}'
 
+echo "This is a test file." > welcome.txt
+
+ansible web -m copy -a "src=welcome.txt dest=/tmp/welcome.txt"  --> To copy a file to a remote server.
+
+mkdir tools
+
+cd tools
+
+for i in {1..10}; do touch item${i}; done
+
+ansible web -m copy -a "src=tools dest=/tmp/"  --> To copy a directory and files to a remote server.
+
+echo "This is a test file." > tools/welcome.txt
+
+ansible web -m copy -a "src=tools/ dest=/tmp/"  --> To copy files to a remote server.
+
+ansible all -m fetch -a 'src=/etc/hosts dest=/tmp'  --> To fetch a file from a remote server.
+
+ansible web -m copy -a 'content="" dest=/home/vagrant/newfile.txt'  --> To create a new file.
+
+ansible web -b -m file -a 'path=/home/vagrant/newfile.txt owner=cidev group=developers mode=700' --> To manipulate the contents of /home/vagrant/newfile.txt
+
+ansible web -m file -a 'src=/etc/hosts dest=/tmp/hosts state=link'  --> To create a symbolic link to /etc/hosts in /tmp/hosts.
+
+ansible web -m file -a 'path=/home/vagrant/newfile.txt state=absent'  --> To delete file /home/vagrant/newfile.txt.
+
+ansible web -b -m file -a 'path=/home/vagrant/newdir mode=700 owner=cidev group=developers state=directory' --> To create a new directory.
+
+ansible web -b -m file -a 'path=/home/vagrant/newdir state=absent'  --> To delete a directory.
+
+ansible all -b -m cron -a "name=archive-logs hour=0 job='/opt/jobs/archive.sh'"  --> Creates a cron job on all servers.
+
+ansible all -b -m cron -a "name=archive-logs special_time=hourly job='/opt/jobs/archive.sh'" --> Creates an hourly cron job.
+
+ansible all -b -m cron -a "name=archive-logs user=cidev special_time=hourly job='/opt/jobs/archive.sh'"  --> Creates an hourly cron job for user cidev.
+
+ansible all -b -m cron -a "name=archive-logs user=cidev state=absent"  --> To delete cron job for user cidev.
+
+ansible all -b -m cron -a "name=archive-logs state=absent"  --> To delete cron job for user root.
 

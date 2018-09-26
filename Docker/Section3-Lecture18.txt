@@ -1,0 +1,15 @@
+docker version --> Verifies cli can talk to docker engine.
+
+docker info --> most configuration values of the docker engine.
+
+docker container run --name mongo01 -d mongo
+
+Manage different aspects of a container: 
+
+create it: docker run --name mongo01 -d mongo
+
+start it, docker container run --publish 80:80 nginx
+
+stop it, 
+
+delete it,

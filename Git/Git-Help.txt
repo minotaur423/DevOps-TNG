@@ -1,0 +1,13 @@
+$ git config --global -l
+user.name=minotaur423
+user.email=minotaur423@me.com
+http.proxy=http://bcpxy.nycnet:8080
+https.proxy=http://bcpxy.nycnet:8080
+core.editor=vi
+merge.tool=vimdiff
+fetch.prune=true
+alias.co=commit
+alias.ch=checkout
+alias.br=branch
+alias.st=status
+alias.sb=status -sb

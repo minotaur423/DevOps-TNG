@@ -1,3 +1,9 @@
 {
+<<<<<<< HEAD
     "https.proxy": "http://bcpxy.nycnet:8080"
+=======
+    "http.proxy": "https://bcpxy.nycnet:8080",
+    "editor.minimap.enabled": false,
+    "python.linting.pylintEnabled": false
+>>>>>>> 0e4fa682664e60fdcbd1bfee5f189ec729c3afa7
 }
