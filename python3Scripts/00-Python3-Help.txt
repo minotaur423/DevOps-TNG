@@ -6,7 +6,7 @@ Installing Python3
 	# yum install https://centos7.iuscommunity.org/ius-release.rpm
 
 3. Install Python3:
-	# yum -y install python36u python36u-pip python36u-devel python36u-libs python36u-setuptools python36u-tkinter
+	# yum -y install python36u python36u-pip python36u-devel python36u-libs python36u-setuptools python36u-tkinter python36u-tools
 
 4. Upgrade PIP:
 	# pip3.6 install pip --upgrade pip
