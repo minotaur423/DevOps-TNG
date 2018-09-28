@@ -1,0 +1,20 @@
+Installing Python3
+1. Install EPEL Repo:
+	# yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+
+2. Install the IUS Repo:
+	# yum install https://centos7.iuscommunity.org/ius-release.rpm
+
+3. Install Python3:
+	# yum -y install python36u python36u-pip python36u-devel python36u-libs python36u-setuptools python36u-tkinter
+
+4. Upgrade PIP:
+	# pip3.6 install pip --upgrade pip
+
+Install Visual Studio Code:
+1. Install the VS Code repository:
+	# rpm --import https://packages.microsoft.com/keys/microsoft.asc
+	# sh -c 'echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" > /etc/yum.repos.d/vscode.repo'
+
+2. Install VS Code:
+	# yum install code

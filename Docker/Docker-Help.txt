@@ -1,3 +1,20 @@
+Install Docker:
+1. Install required packages.
+	# yum install -y yum-utils device-mapper-persistent-data lvm2
+
+2. Install and enable the Docker repo:
+	# yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+
+3. Install the latest version of Docker CE:
+	# yum install docker-ce
+
+4. Start docker:
+	# systemctl enable docker && systemctl start docker
+
+5. Check docker:
+	# docker version
+	# docker info
+
 Containers:
 $ docker version --> Verifies cli can talk to docker engine.
 
