@@ -32,5 +32,3 @@ alias.br=branch
 alias.st=status
 alias.sb=status -sb
 credential.helper=cache
-
-yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
