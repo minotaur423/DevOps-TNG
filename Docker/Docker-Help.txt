@@ -15,6 +15,24 @@ Install Docker:
 	# docker version
 	# docker info
 
+Note: Only at work:
+6. Create systemd service file:
+	# vim /etc/systemd/system/docker.service.d/http-proxy.conf
+	Add the following:
+	[Service]
+	Environment="HTTP_PROXY=http://bcpxy.nycnet:8080"
+	Environment="HTTPS_PROXY=http://bcpxy.nycnet:8080"	
+
+7. Reload systemd daemon:
+	# systemctl daemon-reload
+
+8. Restart docker process:
+	# systemctl restart docker
+
+9. Verify changes:
+	# systemctl show --property=Environment docker
+	# docker run hello-world
+
 Containers:
 $ docker version --> Verifies cli can talk to docker engine.
 
