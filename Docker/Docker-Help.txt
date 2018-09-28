@@ -1,3 +1,7 @@
+Configure Hyper-V machine for Nested Virtualization:
+1. Open PowerShell as Administrator and run the following command:
+	$ Set-VMProcessor -VMName Docker -ExposeVirtualizationExtensions $true
+
 Install Docker:
 1. Install required packages.
 	# yum install -y yum-utils device-mapper-persistent-data lvm2
