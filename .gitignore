@@ -3,3 +3,4 @@ __pycache__
 ansible-machines/centos/.vagrant
 ansible-machines/ubuntu/.vagrant
 *.swp
+.vscode/
