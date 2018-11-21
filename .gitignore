@@ -4,3 +4,7 @@ ansible-machines/centos/.vagrant
 ansible-machines/ubuntu/.vagrant
 *.swp
 .vscode/
+Ansible/
+Complete-Python-3-Bootcamp/
+udemy-docker-mastery/
+Python3-Practice
