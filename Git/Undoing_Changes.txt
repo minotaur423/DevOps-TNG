@@ -1,0 +1,20 @@
+Quick Reference
+
+1. View a previous commit:
+	$ git checkout <commit-id>
+
+2. Create an annotated tag pointing to the most recent commit:
+	$ git tag -a <tag-name> -m "<description>"
+
+3. Undo the specified commit by applying a new commit:
+	$ git revert <commit-id>
+
+4. Reset tracked files to match the most recent commit:
+	$ git reset --hard
+
+5. Remove untracked files:
+	$ git clean -f
+
+6. Permanently undo uncommitted changes:
+	$ git reset --hard / git clean -f
+

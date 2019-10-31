@@ -1,0 +1,23 @@
+Quick Reference 
+
+1. Create a Git repository in the current folder:
+	$ git init 
+
+2. View the status of each file in a repository:
+	$ git status
+
+3. Stage a file for the next commit:
+	$ git add <file> 
+
+4. Commit the staged files with a descriptive message:
+	$ git commit
+
+5. View a repository’s commit history:
+	$ git log
+
+6. Define the author name to be used in all repositories:
+	$ git config --global user.name "<name>"
+
+7. Define the author email to be used in all repositories:
+	$ git config --global user.email <email>
+
